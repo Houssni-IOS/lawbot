@@ -1,0 +1,12 @@
+Flask
+Werkzeug
+pdfplumber
+pymongo
+flask-cors
+numpy
+llama-index
+torch
+faiss-cpu
+tenacity
+pyjwt
+bson

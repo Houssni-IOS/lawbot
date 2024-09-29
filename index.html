@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Query Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background: #f4f4f4;
+        }
+        form {
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        input[type="text"], input[type="file"] {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        h1, h2 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF Upload and Query Interface</h1>
+    
+    <!-- Upload PDF Form -->
+    <h2>Upload PDF</h2>
+    <form id="uploadForm" action="/upload-pdf" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="application/pdf">
+        <button type="submit">Upload PDF</button>
+    </form>
+
+    <!-- Query Form -->
+    <h2>Query Documents</h2>
+    <form id="queryForm" action="/query" method="GET">
+        <input type="text" name="query" placeholder="Enter your query here">
+        <button type="submit">Query</button>
+    </form>
+
+    <!-- Placeholder for displaying query results or errors -->
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let formData = new FormData(this);
+            fetch(this.action, {
+                method: this.method,
+                body: formData
+            }).then(response => response.json())
+            .then(data => {
+                document.getElementById('results').innerHTML = 
+                    `<pre>Upload Result: ${JSON.stringify(data, null, 2)}</pre>`;
+            }).catch(error => {
+                document.getElementById('results').innerHTML = 
+                    `<p>Error: ${error.toString()}</p>`;
+            });
+        });
+
+        document.getElementById('queryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let url = new URL(this.action);
+            let params = new URLSearchParams(new FormData(this)).toString();
+            fetch(`${url}?${params}`, {
+                method: this.method
+            }).then(response => response.json())
+            .then(data => {
+                document.getElementById('results').innerHTML = 
+                    `<pre>Query Result: ${JSON.stringify(data, null, 2)}</pre>`;
+            }).catch(error => {
+                document.getElementById('results').innerHTML = 
+                    `<p>Error: ${error.toString()}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>
